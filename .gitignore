@@ -19,3 +19,5 @@
 /guestbook/.phpunit.result.cache
 /guestbook/phpunit.xml
 ###< symfony/phpunit-bridge ###
+
+notes
