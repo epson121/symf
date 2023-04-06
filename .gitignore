@@ -1,0 +1,21 @@
+
+###> symfony/framework-bundle ###
+/guestbook/.env.local
+/guestbook/.env.local.php
+/guestbook/.env.*.local
+/guestbook/.env
+/guestbook/config/secrets/prod/prod.decrypt.private.php
+/guestbook/public/bundles/
+/guestbook/var/
+/guestbook/vendor/
+###< symfony/framework-bundle ###
+
+###> phpunit/phpunit ###
+/guestbook/phpunit.xml
+/guestbook/.phpunit.result.cache
+###< phpunit/phpunit ###
+
+###> symfony/phpunit-bridge ###
+/guestbook/.phpunit.result.cache
+/guestbook/phpunit.xml
+###< symfony/phpunit-bridge ###
