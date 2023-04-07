@@ -7,10 +7,21 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Twig\Environment;
+use App\Entity\Comment;
+use App\Form\CommentFormType;
 
 class ConferenceController extends AbstractController
 {
+
+    public function __construct(
+        private EntityManagerInterface $entityManager
+    ) {
+    }
+
     #[Route('/', name: 'homepage')]
     public function index(ConferenceRepository $conferenceRepository): Response
     {
@@ -30,8 +41,33 @@ class ConferenceController extends AbstractController
      public function show(
         Request $request,
         \App\Entity\Conference $conference,
-        \App\Repository\CommentRepository $commentRepository): Response
-     {
+        \App\Repository\CommentRepository $commentRepository,
+        #[Autowire('%photo_dir%')] string $photoDir
+        ): Response {
+
+        $comment = new Comment();
+        $form = $this->createForm(CommentFormType::class, $comment);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setConference($conference);
+
+            if ($photo = $form['photo']->getData()) {
+                $filename = bin2hex(random_bytes(6)).'.'.$photo->guessExtension();
+                try {
+                    $photo->move($photoDir, $filename);
+                } catch (FileException $e) {
+                    // unable to upload the photo, give up
+                }
+                $comment->setPhotoFilename($filename);
+            }
+
+            $this->entityManager->persist($comment);
+            $this->entityManager->flush();
+            return $this->redirectToRoute('conference', ['slug' => $conference->getSlug()]);
+        }
+
         $offset = max(0, $request->query->getInt('offset', 0));
         $paginator = $commentRepository->getCommentPaginator($conference, $offset);
 
@@ -41,7 +77,8 @@ class ConferenceController extends AbstractController
                 'comments' => $paginator,
                 'previous' => $offset - \App\Repository\CommentRepository::PAGINATOR_PER_PAGE,
                 'next' => min(count($paginator), $offset +
-                \App\Repository\CommentRepository::PAGINATOR_PER_PAGE)
+                \App\Repository\CommentRepository::PAGINATOR_PER_PAGE),
+                'comment_form' => $form
             ]
         );
      }
