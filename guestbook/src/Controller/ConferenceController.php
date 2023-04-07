@@ -26,7 +26,7 @@ class ConferenceController extends AbstractController
     //     return new Response("Hello, $name. Parameter has $g");
     // }
     
-     #[Route('/conference/{id}', name: 'conference')]
+     #[Route('/conference/{slug}', name: 'conference')]
      public function show(
         Request $request,
         \App\Entity\Conference $conference,
