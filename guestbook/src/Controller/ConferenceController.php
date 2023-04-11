@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Bridge\Twig\Mime\NotificationEmail;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Notifier\Notification\Notification;
+use Symfony\Component\Notifier\NotifierInterface;
 use Twig\Environment;
 use App\Entity\Comment;
 use App\Form\CommentFormType;
@@ -22,6 +24,7 @@ class ConferenceController extends AbstractController
     public function __construct(
         private EntityManagerInterface $entityManager,
         private MailerInterface $mailer,
+        private NotifierInterface $notifier,
         #[Autowire('%admin_email%')] private string $adminEmail
     ) {
     }
@@ -77,8 +80,16 @@ class ConferenceController extends AbstractController
                 ->from($this->adminEmail)
                 ->to($this->adminEmail)
                 ->context(['comment' => $comment]));
+            
+            $this->notifier->send(
+                new Notification('Thank you for the feedback; your comment will be posted after moderation.', ['browser'])
+            );
 
             return $this->redirectToRoute('conference', ['slug' => $conference->getSlug()]);
+        }
+
+        if ($form->isSubmitted()) {
+            $this->notifier->send(new Notification('Can you check your submission? There are some problems with it.', ['browser']));
         }
 
         $offset = max(0, $request->query->getInt('offset', 0));
