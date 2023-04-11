@@ -1,0 +1,6 @@
+<ul>
+{% for conference in conferences %}
+    <h4>{{ conference }}</h4>
+        <li><a href="{{ path('conference', {slug: conference.slug})}}">View</a></li>
+{% endfor %}
+</ul>
