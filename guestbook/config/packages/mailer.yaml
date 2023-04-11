@@ -1,3 +1,7 @@
 framework:
     mailer:
-        dsn: '%env(MAILER_DSN)%'
+        #dsn: '%env(MAILER_DSN)%'
+        #dsn: sendmail://default
+        dsn: smtp://mailhog:1025
+        envelope:
+            sender: "%admin_email%"

@@ -24,3 +24,4 @@ notes
 /guestbook/public/uploads
 
 /guestbook/config/secrets/dev/dev.decrypt.private.php
+.vscode
