@@ -7,13 +7,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class KernelResponseSubscriber implements EventSubscriberInterface {
 
-    public function __construct(
-        public \App\Kernel $kernel,
-        public \Twig\Environment $twig
-    ) {
-        
-    }
-
     public static function getSubscribedEvents() {
         return [
             \Symfony\Component\HttpKernel\KernelEvents::RESPONSE => [
@@ -59,10 +52,7 @@ class KernelResponseSubscriber implements EventSubscriberInterface {
     public function handleController(\Symfony\Component\HttpKernel\Event\ControllerEvent $event) {
         $shouldChangeController = $event->getRequest()->query->get('change');
         if ($shouldChangeController) {
-            
-            $container = $this->kernel->getContainer();
-            $instance = new \App\Controller\ChangeController($this->twig);
-            $instance->setContainer($container);
+            $instance = new \App\Controller\ChangeController();
             $callable = [$instance, 'change'];
             $event->setController($callable);
         }
