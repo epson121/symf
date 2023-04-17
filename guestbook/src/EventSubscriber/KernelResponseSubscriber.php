@@ -7,6 +7,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class KernelResponseSubscriber implements EventSubscriberInterface {
 
+    public function __construct(
+        public \App\Kernel $kernel,
+        public \Twig\Environment $twig
+    ) {
+        
+    }
+
     public static function getSubscribedEvents() {
         return [
             \Symfony\Component\HttpKernel\KernelEvents::RESPONSE => [
@@ -14,6 +21,9 @@ class KernelResponseSubscriber implements EventSubscriberInterface {
             ],
             \Symfony\Component\HttpKernel\KernelEvents::REQUEST => [
                 'handleRequest'
+            ],
+            \Symfony\Component\HttpKernel\KernelEvents::CONTROLLER => [
+                'handleController'
             ]
         ];
     }
@@ -40,6 +50,23 @@ class KernelResponseSubscriber implements EventSubscriberInterface {
             $event->setResponse($response);
         }
         
+        return;
+    }
+
+    /**
+     * Change controller on the fly (needs some twig shenaningans - it was missing when calling render)
+     */
+    public function handleController(\Symfony\Component\HttpKernel\Event\ControllerEvent $event) {
+        $shouldChangeController = $event->getRequest()->query->get('change');
+        if ($shouldChangeController) {
+            
+            $container = $this->kernel->getContainer();
+            $instance = new \App\Controller\ChangeController($this->twig);
+            $instance->setContainer($container);
+            $callable = [$instance, 'change'];
+            $event->setController($callable);
+        }
+
         return;
     }
 
