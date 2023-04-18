@@ -15,4 +15,11 @@ class ChangeController extends AbstractController {
         return [];
     }
 
+    #[Route('/test', name: 'test')]
+    #[Template('test.html.twig')]
+    public function test(\App\Service\TestServiceInterface $testService) {
+        $data = $testService->execute();
+        return ['data' => $data];
+    }
+
 }
