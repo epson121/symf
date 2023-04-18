@@ -2,9 +2,10 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bridge\Twig\Attribute\Template;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 
 class ChangeController extends AbstractController {
@@ -22,7 +23,11 @@ class ChangeController extends AbstractController {
 
     #[Route('/test', name: 'test')]
     #[Template('test.html.twig')]
-    public function test(\App\Service\TestServiceInterface $testService) {
+    public function test(
+        \App\Service\TestServiceInterface $testService,
+        MessageBusInterface $bus
+    ) {
+        $bus->dispatch(new \App\Message\TestMessage('This is a new message'));
         $data = $testService->execute();
         $env = $this->params->get('kernel.environment');
         return ['data' => $data, 'custom_argument' => $this->customArgument, 'env' => $env];
