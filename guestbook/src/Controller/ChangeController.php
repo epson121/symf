@@ -5,9 +5,14 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bridge\Twig\Attribute\Template;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 
 class ChangeController extends AbstractController {
+
+    public function __construct(
+        private $customArgument,
+        private ContainerBagInterface $params
+    ) {}
 
     #[Route('/change', name: 'change')]
     #[Template('change.html.twig')]
@@ -19,7 +24,8 @@ class ChangeController extends AbstractController {
     #[Template('test.html.twig')]
     public function test(\App\Service\TestServiceInterface $testService) {
         $data = $testService->execute();
-        return ['data' => $data];
+        $env = $this->params->get('kernel.environment');
+        return ['data' => $data, 'custom_argument' => $this->customArgument, 'env' => $env];
     }
 
 }

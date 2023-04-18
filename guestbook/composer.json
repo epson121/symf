@@ -19,6 +19,7 @@
         "sensio/framework-extra-bundle": "^6.1",
         "symfony/amqp-messenger": "6.2.*",
         "symfony/asset": "6.2.*",
+        "symfony/cache-contracts": "^3.2",
         "symfony/console": "6.2.*",
         "symfony/doctrine-messenger": "6.2.*",
         "symfony/dotenv": "6.2.*",
