@@ -63,7 +63,8 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
+            "App\\": "src/",
+            "CustomBundle\\": "bundles/CustomBundle/src/"
         }
     },
     "autoload-dev": {
