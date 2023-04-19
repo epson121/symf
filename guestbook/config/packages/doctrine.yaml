@@ -18,6 +18,11 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+            CustomBundle:
+                is_bundle: false
+                dir: '%kernel.project_dir%/bundles/CustomBundle/src/Entity'
+                prefix: 'CustomBundle\Entity'
+                alias: CustomBundle
 
 when@test:
     doctrine:

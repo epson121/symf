@@ -1,0 +1,8 @@
+# doctrine:
+#     orm:
+#         mappings:
+#             CustomBundle:
+#                 is_bundle: true
+#                 dir: '%kernel.project_dir%/bundles/CustomBundle/src/Entity'
+#                 prefix: 'CustomBundle\Entity'
+#                 alias: CustomBundle
