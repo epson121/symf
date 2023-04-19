@@ -1,0 +1,14 @@
+
+{% block body %}
+
+    <div class="container">
+        <div>{{lyrics.content}}</div>
+        <div>{{lyrics.createdAt|date("Y-m-d H:i:s")}}</div>
+    </div>
+
+    <a href="{{ path('app_lyrics') }}"
+        class="">
+            <div>Back</div>
+    </a>
+
+{% endblock %}

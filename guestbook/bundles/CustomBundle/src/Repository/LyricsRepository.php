@@ -39,6 +39,16 @@ class LyricsRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByDate($value, $expr = ">")
+    {
+        return $this->createQueryBuilder('q')
+            ->andWhere("q.created_at $expr :val")
+            ->setParameter('val', $value)
+            ->orderBy('q.created_at', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Lyrics[] Returns an array of Lyrics objects
 //     */

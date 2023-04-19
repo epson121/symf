@@ -9,15 +9,7 @@
                     <div>{{item.content}}</div>
             </a>
             <div>{{item.createdAt|date("Y-m-d H:i:s")}}</div>
-            <a href="{{ path('app_lyrics_delete', { id: item.id }) }}"
-                class="">
-                    <span>delete</span>
-            </a>
         </div>
     {% endfor %}
-
-    <div>
-        {{ form(form) }}
-    </div>
 
 {% endblock %}
