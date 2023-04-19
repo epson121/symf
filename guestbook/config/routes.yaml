@@ -1,5 +1,12 @@
-controllers:
+controllers_a:
     resource:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+controllers_b:
+    resource:
+        path: ../bundles/CustomBundle/src/Controller/
+        namespace: CustomBundle\Controller
+        tags: ['controller.service_arguments']
+    type: attribute
+
