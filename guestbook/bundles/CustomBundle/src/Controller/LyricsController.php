@@ -18,6 +18,8 @@ class LyricsController extends AbstractController
     #[Route('/lyrics', name: 'app_lyrics')]
     public function index(EntityManagerInterface $entityManager, Request $request): Response
     {        
+        // $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
         $lyricsEntity = new Lyrics();
         $form = $this->createForm(LyricsType::class, $lyricsEntity);
 
@@ -32,7 +34,10 @@ class LyricsController extends AbstractController
             return $this->redirect($request->getUri());
         }
 
+        $user = $this->getUser();
+
         return $this->render('lyrics/index.html.twig', [
+            'user' => $user,
             'lyrics' => $entityManager->getRepository(Lyrics::class)->findAll(),
             'form' => $form
         ]);
@@ -43,7 +48,10 @@ class LyricsController extends AbstractController
     {
         $newLyrics = $entityManager->getRepository(Lyrics::class)->findByDate(new DateTime('-2 hour'));
 
+        $user = $this->getUser();
+
         return $this->render('lyrics/new.html.twig', [
+            'user' => $user,
             'lyrics' => $newLyrics
         ]);
     }
@@ -59,7 +67,10 @@ class LyricsController extends AbstractController
     #[Route('/lyrics/{id}', name: 'app_lyrics_show')]
     public function show(Lyrics $lyrics): Response
     {        
+        $user = $this->getUser();
+
         return $this->render('lyrics/show.html.twig', [
+            'user' => $user,
             'lyrics' => $lyrics
         ]);
     }
