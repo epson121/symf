@@ -30,3 +30,8 @@ services:
     App\Controller\ChangeController:
         arguments:
             $customArgument: 22
+
+    app.cache.adapter.redis:
+        parent: 'cache.adapter.redis'
+        tags:
+            - { name: 'cache.pool', namespace: 'my_custom_namespace' }

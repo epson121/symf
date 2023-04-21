@@ -1,0 +1,18 @@
+{# read and display just one flash message type #}
+{% for message in app.flashes('notice') %}
+    <div class="flash-notice">
+        {{ message }}
+    </div>
+{% endfor %}
+
+<div>
+{{data}}
+</div>
+
+<style>
+    .flash-notice {
+        background-color: green;
+        color: white;
+        max-width: 30%;
+    }
+</style>
