@@ -2,7 +2,9 @@
 <html lang="en">
     <body>
         <header class="header">
-           Hello <b>{{user.email}}</b>
+            {% if is_granted('ROLE_USER') %}
+                <p>Email: {{ app.user.email }}</p>
+            {% endif %}
         </header>
         <br><br>
         <main role="main" class="container mt-5">
