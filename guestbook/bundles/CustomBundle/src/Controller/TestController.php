@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpKernel\Attribute\Cache;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TestController extends AbstractController {
@@ -63,6 +64,32 @@ class TestController extends AbstractController {
         ]);
 
         return $response;
+    }
+
+    #[Route('/streamer', name: 'app_streamer')]
+    public function streamer()
+    {
+        
+        $data = [
+            'message' => random_int(1, 1000)
+        ];
+
+        $response = new StreamedResponse();
+        $response->setCallback(function () use ($data){
+
+             echo 'data: ' . json_encode($data) . "\n\n";
+             ob_flush();
+             flush();
+             usleep(200000);
+        });
+
+        $response->headers->set('Content-Type', 'text/event-stream');
+        $response->headers->set('Cache-Control', 'max-age=20, public');
+        $response->send();
+        
+        // $response->headers->set('Content-Type', 'text/event-stream');
+        // $response->headers->set('Cache-Control', 'no-cache');
+        // return $response;
     }
 
 }
