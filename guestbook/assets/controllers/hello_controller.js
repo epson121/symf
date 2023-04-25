@@ -10,7 +10,14 @@ import { Controller } from '@hotwired/stimulus';
  * Delete this file or adapt it for your use!
  */
 export default class extends Controller {
+    
+    initialize() {
+        $(this.element).on('click', function(){
+            console.log('okok')
+        });
+    }
+
     connect() {
-        this.element.textContent = 'Hello Stimulus! Edit me in assets/controllers/hello_controller.js';
+        this.element.textContent = 'Change the text';
     }
 }

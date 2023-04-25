@@ -1,4 +1,10 @@
+{% extends 'c_base.html.twig' %}
+
+{% block body %}
+
 <div>
+    <p data-controller="hello">some text</p>
+
     <p>Original template: {{date}}</p>
 1
     <p>ESI: {{ render_esi(url('app_test_esi')) }}</p>
@@ -6,7 +12,7 @@
     <div id='list'></div>
 
     <script type="text/javascript">
-        let evtSource = new EventSource("/streamer", {withCredentials: false});
+        {# let evtSource = new EventSource("/streamer", {withCredentials: false});
 
         evtSource.onmessage = function (e) {
             let data = JSON.parse(e.data);
@@ -16,6 +22,8 @@
             let p = document.createElement("p");
             p.textContent = data['message'];
             list.append(p);
-        };
+        }; #}
     </script>
 </div>
+
+{% endblock %}
