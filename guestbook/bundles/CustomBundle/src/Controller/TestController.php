@@ -1,5 +1,6 @@
 <?php
 
+
 namespace CustomBundle\Controller;
 
 use DateTime;
@@ -8,7 +9,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpKernel\Attribute\Cache;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+
+define('CHUNK_SIZE', 1024*1024); 
 
 class TestController extends AbstractController {
 
@@ -90,6 +95,66 @@ class TestController extends AbstractController {
         // $response->headers->set('Content-Type', 'text/event-stream');
         // $response->headers->set('Cache-Control', 'no-cache');
         // return $response;
+    }
+
+    #[Route('/watch', name: 'app_watch')]
+    public function watch()
+    {
+        $response = $this->render('test/watch.html.twig');
+
+        return $response;
+    }
+
+    #[Route('/stream_large', name: 'app_stream_large')]
+    public function streamLarge(ContainerBagInterface $containerBagInterface)
+    {
+
+        $path = $containerBagInterface->get('kernel.project_dir');
+        $path = "$path/public/files/mov.mkv";
+
+        $response = new StreamedResponse();
+        $response->setCallback(function() use ($path) {
+            $this->readfile_chunked($path);
+        });
+        $filename = "mov.mkv";
+        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename);
+        $response->headers->set('Content-Type', 'video/x-matroska');
+        $response->headers->set('Content-Disposition', $contentDisposition);
+        return $response;
+    }
+
+    
+
+    // Read a file and display its content chunk by chunk
+    public function readfile_chunked($filename, $retbytes = TRUE) {
+        $buffer = '';
+        $cnt    = 0;
+        $handle = fopen($filename, 'rb');
+
+        if ($handle === false) {
+            return false;
+        }
+
+        ob_start();
+
+        while (!feof($handle)) {
+            $buffer = fread($handle, 1024*1024);
+            echo $buffer;
+            ob_flush();
+            flush();
+
+            if ($retbytes) {
+                $cnt += strlen($buffer);
+            }
+        }
+
+        $status = fclose($handle);
+
+        if ($retbytes && $status) {
+            return $cnt; // return num. bytes delivered like readfile() does.
+        }
+
+        return $status;
     }
 
 }
